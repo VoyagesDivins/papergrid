@@ -1,0 +1,8 @@
+.drawing-area {
+    border: solid 1px black;
+}
+
+.grid-element {
+    width: 150px;
+    height: 150px;
+}
