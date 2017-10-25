@@ -67,6 +67,7 @@ function saveCurrent(e: MouseEvent): void {
  */
 function mergeRandom(e: MouseEvent): void {
     let n = grid.children.length;
+    if (n < 2) return;
 
     let a = getRandomInt(0, n);
     
@@ -137,6 +138,7 @@ function drawLine(startX: number, startY: number, endX: number, endY: number) {
     drawingAreaCtx.beginPath();
     drawingAreaCtx.lineWidth = +strokeControl.value;
     drawingAreaCtx.strokeStyle = colorControl.value;
+    drawingAreaCtx.lineCap = 'round';
     drawingAreaCtx.moveTo(startX, startY);
     drawingAreaCtx.lineTo(endX, endY);
     drawingAreaCtx.stroke();

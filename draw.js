@@ -55,6 +55,8 @@ function saveCurrent(e) {
  */
 function mergeRandom(e) {
     var n = grid.children.length;
+    if (n < 2)
+        return;
     var a = getRandomInt(0, n);
     var b = getRandomInt(0, n);
     while (a === b) {
@@ -108,6 +110,7 @@ function drawLine(startX, startY, endX, endY) {
     drawingAreaCtx.beginPath();
     drawingAreaCtx.lineWidth = +strokeControl.value;
     drawingAreaCtx.strokeStyle = colorControl.value;
+    drawingAreaCtx.lineCap = 'round';
     drawingAreaCtx.moveTo(startX, startY);
     drawingAreaCtx.lineTo(endX, endY);
     drawingAreaCtx.stroke();
