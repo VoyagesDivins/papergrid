@@ -57,29 +57,31 @@ function mergeRandom(e) {
     var n = grid.children.length;
     if (n < 2)
         return;
-    var a = getRandomInt(0, n);
-    var b = getRandomInt(0, n);
-    while (a === b) {
-        b = getRandomInt(0, n);
+    for (var i = 0; i < 100; i++) {
+        var a = getRandomInt(0, n);
+        var b = getRandomInt(0, n);
+        while (a === b) {
+            b = getRandomInt(0, n);
+        }
+        var canvas1 = grid.children[a];
+        var canvas2 = grid.children[b];
+        var canvas1Ctx = canvas1.getContext("2d");
+        var canvas2Ctx = canvas2.getContext("2d");
+        var canvas1ImgData = canvas1Ctx.getImageData(0, 0, 150, 150);
+        var data1 = canvas1ImgData.data;
+        var canvas2ImgData = canvas2Ctx.getImageData(0, 0, 150, 150);
+        var data2 = canvas2ImgData.data;
+        var newImageData = new ImageData(150, 150);
+        for (var i_1 = 0; i_1 < canvas1ImgData.data.length; i_1++) {
+            newImageData.data[i_1] = data1[i_1] + data2[i_1];
+        }
+        var mergeRes = document.createElement("canvas");
+        mergeRes.height = 150;
+        mergeRes.width = 150;
+        mergeArea.appendChild(mergeRes);
+        var mergeResCtx = mergeRes.getContext("2d");
+        mergeResCtx.putImageData(newImageData, 0, 0);
     }
-    var canvas1 = grid.children[a];
-    var canvas2 = grid.children[b];
-    var canvas1Ctx = canvas1.getContext("2d");
-    var canvas2Ctx = canvas2.getContext("2d");
-    var canvas1ImgData = canvas1Ctx.getImageData(0, 0, 150, 150);
-    var data1 = canvas1ImgData.data;
-    var canvas2ImgData = canvas2Ctx.getImageData(0, 0, 150, 150);
-    var data2 = canvas2ImgData.data;
-    var newImageData = new ImageData(150, 150);
-    for (var i = 0; i < canvas1ImgData.data.length; i++) {
-        newImageData.data[i] = data1[i] + data2[i];
-    }
-    var mergeRes = document.createElement("canvas");
-    mergeRes.height = 150;
-    mergeRes.width = 150;
-    mergeArea.appendChild(mergeRes);
-    var mergeResCtx = mergeRes.getContext("2d");
-    mergeResCtx.putImageData(newImageData, 0, 0);
 }
 /**
  * Draw a line between current and last mouse position

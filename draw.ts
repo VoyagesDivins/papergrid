@@ -68,41 +68,44 @@ function saveCurrent(e: MouseEvent): void {
 function mergeRandom(e: MouseEvent): void {
     let n = grid.children.length;
     if (n < 2) return;
-
-    let a = getRandomInt(0, n);
     
-    let b = getRandomInt(0, n);
-    
-    while(a === b)
+    for(let i = 0; i < 100; i++)
     {
-        b = getRandomInt(0, n);
+        let a = getRandomInt(0, n);
+        
+        let b = getRandomInt(0, n);
+        
+        while(a === b)
+        {
+            b = getRandomInt(0, n);
+        }
+
+
+        let canvas1 = <HTMLCanvasElement>  grid.children[a];
+        let canvas2 = <HTMLCanvasElement>  grid.children[b];
+        let canvas1Ctx = canvas1.getContext("2d");
+        let canvas2Ctx = canvas2.getContext("2d");
+        
+        let canvas1ImgData = canvas1Ctx.getImageData(0,0, 150,150);
+        let data1 = canvas1ImgData.data;
+        let canvas2ImgData = canvas2Ctx.getImageData(0,0, 150,150);
+        let data2 = canvas2ImgData.data;
+
+        let newImageData = new ImageData(150, 150);
+
+        for(let i = 0; i < canvas1ImgData.data.length; i++ )
+        {
+            newImageData.data[i] = data1[i] + data2[i];
+        }
+
+        let mergeRes = document.createElement("canvas");    
+        mergeRes.height = 150;
+        mergeRes.width = 150;
+        mergeArea.appendChild(mergeRes);
+        let mergeResCtx = mergeRes.getContext("2d");
+
+        mergeResCtx.putImageData(newImageData, 0, 0);
     }
-
-
-    let canvas1 = <HTMLCanvasElement>  grid.children[a];
-    let canvas2 = <HTMLCanvasElement>  grid.children[b];
-    let canvas1Ctx = canvas1.getContext("2d");
-    let canvas2Ctx = canvas2.getContext("2d");
-    
-    let canvas1ImgData = canvas1Ctx.getImageData(0,0, 150,150);
-    let data1 = canvas1ImgData.data;
-    let canvas2ImgData = canvas2Ctx.getImageData(0,0, 150,150);
-    let data2 = canvas2ImgData.data;
-
-    let newImageData = new ImageData(150, 150);
-
-    for(let i = 0; i < canvas1ImgData.data.length; i++ )
-    {
-        newImageData.data[i] = data1[i] + data2[i];
-    }
-
-    let mergeRes = document.createElement("canvas");    
-    mergeRes.height = 150;
-    mergeRes.width = 150;
-    mergeArea.appendChild(mergeRes);
-    let mergeResCtx = mergeRes.getContext("2d");
-
-    mergeResCtx.putImageData(newImageData, 0, 0);
 }
 
 /**
