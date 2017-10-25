@@ -7,7 +7,14 @@
     </head>
 
     <body>
-        <h1>Paper Grid</h1>      
+        <h1>Paper Grid</h1>   
+        <div class="controls">
+            <label for="stroke">Stroke:</label>
+            <input id="stroke" type="range" name="stroke" min="0" max="10" value="2" data-sizing="px">
+        
+            <label for="base">Base Color</label>
+            <input id="base" type="color" name="base" value="#ffc600">
+        </div>   
         <canvas id="drawing-area" width="300px" height="300px" class="drawing-area"></canvas>
         <button type="button" id="save">Save</button> 
         <div id="grid"></div>

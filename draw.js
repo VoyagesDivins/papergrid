@@ -106,6 +106,8 @@ function draw(e) {
  */
 function drawLine(startX, startY, endX, endY) {
     drawingAreaCtx.beginPath();
+    drawingAreaCtx.lineWidth = +strokeControl.value;
+    drawingAreaCtx.strokeStyle = colorControl.value;
     drawingAreaCtx.moveTo(startX, startY);
     drawingAreaCtx.lineTo(endX, endY);
     drawingAreaCtx.stroke();
@@ -121,3 +123,6 @@ function getRandomInt(min, max) {
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min)) + min;
 }
+/* Get controls */
+var strokeControl = document.getElementById('stroke');
+var colorControl = document.getElementById('base');

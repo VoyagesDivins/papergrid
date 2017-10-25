@@ -135,6 +135,8 @@ function draw(e: MouseEvent): void {
  */
 function drawLine(startX: number, startY: number, endX: number, endY: number) {
     drawingAreaCtx.beginPath();
+    drawingAreaCtx.lineWidth = +strokeControl.value;
+    drawingAreaCtx.strokeStyle = colorControl.value;
     drawingAreaCtx.moveTo(startX, startY);
     drawingAreaCtx.lineTo(endX, endY);
     drawingAreaCtx.stroke();
@@ -151,3 +153,7 @@ function getRandomInt(min: number, max: number) {
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min)) + min; 
 }
+
+/* Get controls */
+let strokeControl = <HTMLInputElement> document.getElementById('stroke');
+let colorControl = <HTMLInputElement> document.getElementById('base');
