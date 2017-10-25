@@ -1,112 +1,77 @@
-function draw(e: MouseEvent): void {    
-    var X = e.pageX - this.offsetLeft 
-    var Y = e.pageY - this.offsetTop
-
-    if(mouseDown){
-        //drawPixel(X, Y, 0, 0, 255, 255);
-        if(lastX)
-        {
-            drawLine(lastX, lastY, X, Y);
-            lastX = X;
-            lastY = Y;
-        } else {            
-            drawLine(X, Y, X, Y);
-            lastX = X;
-            lastY = Y;
-        }
-        //updateCanvas();
-    }
-}
-
-let mouseDown = 0;
+/* Handling mouse position */
 let lastX;
 let lastY;
-
-document.body.onmousedown = function() { 
-  ++mouseDown;
-}
-document.body.onmouseup = function() {
-  --mouseDown;
-}
-
 document.onmouseup = function() {
     lastX = null;
 }
 
+/* Handling mouse button position */
+let mouseDown = 0;
+
+document.body.onmousedown = function() { 
+  ++mouseDown;
+}
+
+document.body.onmouseup = function() {
+  --mouseDown;
+}
+
+/* Drawing Area is a canvas where user can draw */
 let drawingArea = <HTMLCanvasElement> document.getElementById('drawing-area');
-let grid = <HTMLDivElement> document.getElementById('grid');
-let mergeArea = <HTMLDivElement> document.getElementById('mergeArea');
-//let gridArea = <HTMLCanvasElement> document.getElementById('grid');
 let drawingAreaWidth = drawingArea.width;
 let drawingAreaHeight = drawingArea.height;
-let ctx = drawingArea.getContext("2d");
-//let ctxGrid = gridArea.getContext("2d");
-let canvasData = ctx.getImageData(0, 0, drawingAreaWidth, drawingAreaHeight);
-
-
+let drawingAreaCtx = drawingArea.getContext("2d");
+let drawingAreaImageData = drawingAreaCtx.getImageData(0, 0, drawingAreaWidth, drawingAreaHeight);
 drawingArea.addEventListener("mousemove", draw);
-/*
-function updateCanvas() {
-    ctx.putImageData(canvasData, 0, 0);
-}
 
-function drawPixel (x, y, r, g, b, a) {
-    var index = (x + y * drawingAreaWidth) * 4;
+/* Grid is where we display saved drawings */
+let grid = <HTMLDivElement> document.getElementById('grid');
 
-    canvasData.data[index + 0] = r;
-    canvasData.data[index + 1] = g;
-    canvasData.data[index + 2] = b;
-    canvasData.data[index + 3] = a;
-}
-*/
+/* Merge Area is where we display the result of merged drawings */
+let mergeArea = <HTMLDivElement> document.getElementById('merge-area');
 
-function drawLine(startX, startY, endX, endY) {
-    ctx.beginPath();
-    ctx.moveTo(startX, startY);
-    ctx.lineTo(endX, endY);
-    ctx.stroke();
-}
-
+/* Save button stores current drawing from drawingArea to grid, and flush drawing area */
 let saveButton = <HTMLButtonElement> document.getElementById('save');
-
 saveButton.addEventListener("click", saveCurrent);
 
+/* Merge button takes two random existing drawing, merge them into one and display it on mergeArea */
 let mergeButton = <HTMLButtonElement> document.getElementById('merge');
 mergeButton.addEventListener("click", mergeRandom);
 
-/*
-on commence en haut à gauche du caneva
-puis on garde ou était la dernière version sauvegardé 
-
-todo :
-- trait continu
-- scale down
-- mettre à la suite
-*/
-
+/**
+ * Function that stores current drawin in grid and flush drawing area
+ * @param e {MouseEvent} click
+ */
 function saveCurrent(e: MouseEvent): void {
-    let gridArea = document.createElement("canvas");
-    gridArea.height = 150;
-    gridArea.width = 150;
-    gridArea.classList.add('drawing-area');
-    gridArea.classList.add('grid-element');
-    let ctxGrid = gridArea.getContext("2d");
-    grid.appendChild(gridArea);
+    let drawing = document.createElement("canvas");
+    drawing.height = 150;
+    drawing.width = 150;
+    drawing.classList.add('drawing-area');
+    drawing.classList.add('grid-element');
+    let drawingCtx = drawing.getContext("2d");
+    grid.appendChild(drawing);
     
-    ctxGrid.scale(0.5, 0.5);
-    ctxGrid.drawImage(drawingArea, 0, 0);
+    drawingCtx.scale(0.5, 0.5);
+    drawingCtx.drawImage(drawingArea, 0, 0);
 
-    ctx.clearRect(0, 0, canvasData.width, canvasData.height);
-    ctx.beginPath();
-    canvasData = ctx.getImageData(0, 0, drawingAreaWidth, drawingAreaHeight);
+    drawingAreaCtx.clearRect(0, 0, drawingAreaImageData.width, drawingAreaImageData.height);
+    drawingAreaCtx.beginPath();
+    drawingAreaImageData = drawingAreaCtx.getImageData(0, 0, drawingAreaWidth, drawingAreaHeight);
 }
 
+/** 
+ * Randomly takes two drawing in grid
+ * Merge them to a new image
+ * Display new image in merge area
+ * @param {MouseEvent} e
+ */
 function mergeRandom(e: MouseEvent): void {
     let n = grid.children.length;
 
     let a = getRandomInt(0, n);
     
     let b = getRandomInt(0, n);
+    
     while(a === b)
     {
         b = getRandomInt(0, n);
@@ -134,14 +99,55 @@ function mergeRandom(e: MouseEvent): void {
     mergeRes.height = 150;
     mergeRes.width = 150;
     mergeArea.appendChild(mergeRes);
-    let mergeCtx = mergeRes.getContext("2d");
+    let mergeResCtx = mergeRes.getContext("2d");
 
-    mergeCtx.putImageData(newImageData, 0, 0);
-
+    mergeResCtx.putImageData(newImageData, 0, 0);
 }
 
-function getRandomInt(min, max) {
+/**
+ * Draw a line between current and last mouse position
+ * @param {MouseEvent} e
+ */
+function draw(e: MouseEvent): void {    
+    var X = e.pageX - this.offsetLeft 
+    var Y = e.pageY - this.offsetTop
+
+    if (mouseDown) {
+        
+        if (lastX)
+        {
+            drawLine(lastX, lastY, X, Y);
+        } else {            
+            drawLine(X, Y, X, Y);
+        }
+
+        lastX = X;
+        lastY = Y;
+    }
+}
+
+/**
+ * Draw a line on canvas drawingArea
+ * @param {number} startX - x coordinates of the starting point
+ * @param {number} startY - y coordinates of the starting point
+ * @param {number} endX - x coordinates of the ending point
+ * @param {number} endY - y coordinates of the ending point
+ */
+function drawLine(startX: number, startY: number, endX: number, endY: number) {
+    drawingAreaCtx.beginPath();
+    drawingAreaCtx.moveTo(startX, startY);
+    drawingAreaCtx.lineTo(endX, endY);
+    drawingAreaCtx.stroke();
+}
+
+/**
+ * From MDN get a random integer between min and max
+ * The maximum is exclusive and the minimum is inclusive
+ * @param {int} min - lower bound
+ * @param {int} max - upper bound
+ */
+function getRandomInt(min: number, max: number) {
     min = Math.ceil(min);
     max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min)) + min; //The maximum is exclusive and the minimum is inclusive
-  }
+    return Math.floor(Math.random() * (max - min)) + min; 
+}
