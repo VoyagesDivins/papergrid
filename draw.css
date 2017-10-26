@@ -1,8 +1,26 @@
 .drawing-area {
     border: solid 1px black;
+    margin-left: -306px;
 }
 
 .grid-element {
     width: 150px;
     height: 150px;
+}
+/* .wrapper {
+    position: relative;
+    width: 300px;
+    height: 300px;
+}
+
+.wrapper canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+} */
+.drawing-area-bg {
+    float: left;
+}
+.selected {
+    border: solid red 1px;
 }

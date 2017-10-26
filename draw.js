@@ -12,6 +12,8 @@ document.body.onmousedown = function () {
 document.body.onmouseup = function () {
     --mouseDown;
 };
+/* Handling selected drawing for background */
+var lastSelection;
 /* Drawing Area is a canvas where user can draw */
 var drawingArea = document.getElementById('drawing-area');
 var drawingAreaWidth = drawingArea.width;
@@ -19,6 +21,8 @@ var drawingAreaHeight = drawingArea.height;
 var drawingAreaCtx = drawingArea.getContext("2d");
 var drawingAreaImageData = drawingAreaCtx.getImageData(0, 0, drawingAreaWidth, drawingAreaHeight);
 drawingArea.addEventListener("mousemove", draw);
+/* Drawing Area background is where previous drawing can be displayed as guide */
+var drawingAreaBg = document.getElementById('drawing-area-bg');
 /* Grid is where we display saved drawings */
 var grid = document.getElementById('grid');
 /* Merge Area is where we display the result of merged drawings */
@@ -29,23 +33,53 @@ saveButton.addEventListener("click", saveCurrent);
 /* Merge button takes two random existing drawing, merge them into one and display it on mergeArea */
 var mergeButton = document.getElementById('merge');
 mergeButton.addEventListener("click", mergeRandom);
+/* Clear Background button clears background */
+var clearBgButton = document.getElementById('clear-bg');
+clearBgButton.addEventListener("click", clearBackground);
+var drawingId = 0;
 /**
  * Function that stores current drawin in grid and flush drawing area
- * @param e {MouseEvent} click
+ * @param {MouseEvent} e - click
  */
 function saveCurrent(e) {
     var drawing = document.createElement("canvas");
-    drawing.height = 150;
-    drawing.width = 150;
-    drawing.classList.add('drawing-area');
+    drawing.height = 300;
+    drawing.width = 300;
+    drawing.id = "drawing" + drawingId++;
     drawing.classList.add('grid-element');
     var drawingCtx = drawing.getContext("2d");
     grid.appendChild(drawing);
-    drawingCtx.scale(0.5, 0.5);
+    //drawingCtx.scale(0.5, 0.5);
     drawingCtx.drawImage(drawingArea, 0, 0);
     drawingAreaCtx.clearRect(0, 0, drawingAreaImageData.width, drawingAreaImageData.height);
     drawingAreaCtx.beginPath();
     drawingAreaImageData = drawingAreaCtx.getImageData(0, 0, drawingAreaWidth, drawingAreaHeight);
+    drawing.addEventListener("click", setBackground);
+}
+/**
+ * Function that clears the background
+ * @param {MouseEvent} e - click
+ */
+function clearBackground(e) {
+    var drawingAreaBgCtx = drawingAreaBg.getContext("2d");
+    drawingAreaBgCtx.clearRect(0, 0, 300, 300);
+    lastSelection = null;
+}
+/**
+ * Display drawing as background for drawing area
+ * @param {MouseEvent} e - click
+ */
+function setBackground(e) {
+    if (lastSelection) {
+        lastSelection.classList.remove("selected");
+    }
+    this.classList.add("selected");
+    lastSelection = this;
+    var selectedDrawingContext = this.getContext("2d");
+    var drawingAreaBgCtx = drawingAreaBg.getContext("2d");
+    drawingAreaBgCtx.clearRect(0, 0, 300, 300);
+    drawingAreaBgCtx.drawImage(this, 0, 0, 300, 300);
+    drawingAreaBgCtx.globalAlpha = 0.5;
 }
 /**
  * Randomly takes two drawing in grid
@@ -67,17 +101,18 @@ function mergeRandom(e) {
         var canvas2 = grid.children[b];
         var canvas1Ctx = canvas1.getContext("2d");
         var canvas2Ctx = canvas2.getContext("2d");
-        var canvas1ImgData = canvas1Ctx.getImageData(0, 0, 150, 150);
+        var canvas1ImgData = canvas1Ctx.getImageData(0, 0, 300, 300);
         var data1 = canvas1ImgData.data;
-        var canvas2ImgData = canvas2Ctx.getImageData(0, 0, 150, 150);
+        var canvas2ImgData = canvas2Ctx.getImageData(0, 0, 300, 300);
         var data2 = canvas2ImgData.data;
-        var newImageData = new ImageData(150, 150);
+        var newImageData = new ImageData(300, 300);
         for (var i_1 = 0; i_1 < canvas1ImgData.data.length; i_1++) {
             newImageData.data[i_1] = data1[i_1] + data2[i_1];
         }
         var mergeRes = document.createElement("canvas");
-        mergeRes.height = 150;
-        mergeRes.width = 150;
+        mergeRes.height = 300;
+        mergeRes.width = 300;
+        mergeRes.classList.add("grid-element");
         mergeArea.appendChild(mergeRes);
         var mergeResCtx = mergeRes.getContext("2d");
         mergeResCtx.putImageData(newImageData, 0, 0);
