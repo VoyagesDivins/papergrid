@@ -7,24 +7,48 @@
     </head>
 
     <body>
-        <h1>Paper Grid</h1>   
-        <div class="controls">
-            <label for="stroke">Stroke:</label>
-            <input id="stroke" type="range" name="stroke" min="0" max="10" value="2" data-sizing="px">
         
-            <label for="base">Base Color</label>
-            <input id="base" type="color" name="base" value="#ffc600">
+        <div class="main-container">
+            <div class="drawing-panels">
+
+                <div class="controls">
+                    <h2>Tools</h2>
+                    <ul>
+                        <li>
+                            <label for="stroke">Stroke:</label>
+                            <input id="stroke" type="range" name="stroke" min="0" max="10" value="8" data-sizing="px">
+                        </li>
+                        <li>
+                            <label for="base">Base Color</label>
+                            <input id="base" type="color" name="base" value="#000000">
+                        </li>
+                        <li>
+                            <button type="button" id="clear-bg">Clear background</button> 
+                        </li>
+                        <li>
+                            <button type="button" id="save">Save</button> 
+                        </li>
+                        <li>
+                            <button type="button" id="merge">Merge</button>
+                        </li>
+                    </ul>
+                </div>   
+        
+                <div class="wrapper">
+                    <canvas id="drawing-area-bg" class="drawing-area-bg" width="300px" height="300px" class="drawing-area"></canvas>
+                    <canvas id="drawing-area" class="drawing-area" width="300px" height="300px" class="drawing-area"></canvas>
+                </div>
+
+            </div>              
+        
+            <!-- Area where drawings are displayed -->
+            <div id="grid"></div>
             
-            <button type="button" id="clear-bg">Clear background</button> 
-        </div>   
-        <div class="wrapper">
-            <canvas id="drawing-area-bg" class="drawing-area-bg" width="300px" height="300px" class="drawing-area"></canvas>
-            <canvas id="drawing-area" class="drawing-area" width="300px" height="300px" class="drawing-area"></canvas>
+            <!-- Area wher merge is displayed -->
+            <div id="merge-area"></div>
         </div>
-        <button type="button" id="save">Save</button> 
-        <div id="grid"></div>
-        <button type="button" id="merge">Merge</button>
-        <div id="merge-area"></div>
+
+        <!-- Scripts -->
         <script src="draw.js" ></script>
     </body>
 </html>

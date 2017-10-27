@@ -1,26 +1,52 @@
+h2 {
+    font-size: 17px;
+}
+
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding-left: 0;
+}
+
+.main-container {
+	font-family: 'Ubuntu', sans-serif;
+	width: 950px;
+	margin: 6em auto;
+}	
+
+.drawing-panels {
+    height: 350px;
+}
+
 .drawing-area {
     border: solid 1px black;
-    margin-left: -306px;
+    margin-left: -300px;
 }
 
 .grid-element {
     width: 150px;
     height: 150px;
 }
-/* .wrapper {
-    position: relative;
-    width: 300px;
-    height: 300px;
-}
 
-.wrapper canvas {
-    position: absolute;
-    top: 0;
-    left: 0;
-} */
 .drawing-area-bg {
     float: left;
+    background: white;
 }
+
 .selected {
     border: solid red 1px;
+}
+
+.wrapper {
+    padding: 5px;
+}
+
+.controls {
+    float: left;
+    width: 300px;
+}
+
+.controls ul li{
+    height: 60px;
+    position: relative;										
 }
